@@ -8,7 +8,7 @@ const client = new Client({
   ssl: process.env.DATABASE_URL ? true : false,
 })
 
-client: connect()
+client.connect()
 
 const pubSub = new PostgresPubSub({ client })
 

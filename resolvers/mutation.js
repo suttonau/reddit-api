@@ -9,7 +9,7 @@ const addPost = async (_, { title, link, imageUrl }) => {
   })
   pubSub.publish('postAdded', {
     postAdded: {
-      id: post.id
+      id: post.id,
       title,
       link,
       imageUrl
@@ -47,7 +47,7 @@ const deletePost = async (_, { id }) => {
 }
 
 module.exports = {
-  postAdded,
+  addPost,
   editPost,
   deletePost
 }

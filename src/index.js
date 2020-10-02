@@ -3,7 +3,7 @@ const { ApolloServer, gql } = require('apollo-server-express')
 const { execute, subscribe } = require('graphql')
 const { createServer, request } = require('http')
 const { makeExecutableSchema } = require('graphql-tools')
-const { SubcriptionServer } = require('subscriptions-transport-ws')
+const { SubscriptionServer } = require('subscriptions-transport-ws')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const resolvers = require('../resolvers')
@@ -19,7 +19,7 @@ const typeDefs = gql`
     id: ID!
   }
   type Query {
-    post: [Posts]
+    posts: [Post]
   }
   type Mutation {
     addPost(title: String!, link: String!, imageUrl: String!): ID
@@ -28,6 +28,8 @@ const typeDefs = gql`
   }
   type Subscription {
     postAdded: Post
+    postEdited: Post
+    postDeleted: ID
   }
 `
 
@@ -39,8 +41,10 @@ const schema = makeExecutableSchema({
 const apolloServer = new ApolloServer({
   schema,
   context: request => {
-    ...request,
-    pubSub
+    return {
+      ...request,
+      pubSub   
+    }
   }
 })
 
@@ -51,9 +55,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(cors())
 
-server.listen({port}, () => {
-  console.log("Server is running at http://localhost:4000")
-  new SubcriptionServer({
+server.listen({ port }, () => {
+  console.log(`Server is running at http://localhost:${port}`)
+  new SubscriptionServer({
     schema,
     execute,
     subscribe,
