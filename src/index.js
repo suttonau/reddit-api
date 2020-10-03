@@ -45,7 +45,8 @@ const apolloServer = new ApolloServer({
       ...request,
       pubSub   
     }
-  }
+  },
+  playground: true
 })
 
 const app = express()
